@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gabriel Portela — Portfolio de Design, Branding e UI/UX">
+  <title>Gabriel Portela | Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Seleção de idioma (primeiro acesso) -->
+  <div id="lang-overlay" class="lang-overlay" role="dialog" aria-modal="true" aria-labelledby="lang-title">
+    <div class="lang-overlay__card">
+      <p class="lang-overlay__label" data-i18n="lang.choose">Escolha o idioma</p>
+      <h2 id="lang-title" class="lang-overlay__title">Gabriel Portela</h2>
+      <p class="lang-overlay__subtitle" data-i18n="lang.subtitle">Portfolio profissional</p>
+      <div class="lang-overlay__buttons">
+        <button type="button" class="btn btn--primary" data-set-lang="pt">Português</button>
+        <button type="button" class="btn btn--outline" data-set-lang="en">English</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navegação fixa -->
+  <header class="site-header" id="site-header">
+    <a href="#hero" class="site-header__logo" data-nav-home>Gabriel Portela</a>
+    <nav class="site-header__nav" aria-label="Principal">
+      <a href="#projects" data-i18n="nav.projects">Projetos</a>
+      <a href="#skills" data-i18n="nav.skills">Habilidades</a>
+      <a href="#contacts" data-i18n="nav.contact">Contato</a>
+    </nav>
+    <div class="site-header__lang">
+      <button type="button" class="lang-toggle" data-set-lang="pt" aria-label="Português">PT</button>
+      <span class="lang-toggle__sep">|</span>
+      <button type="button" class="lang-toggle" data-set-lang="en" aria-label="English">EN</button>
+    </div>
+  </header>
+
+  <!-- ========== PÁGINA PRINCIPAL ========== -->
+  <main id="page-home">
+
+    <!-- Hero -->
+    <section class="hero" id="hero">
+      <div class="hero__content">
+        <p class="hero__eyebrow" data-i18n="hero.eyebrow">Design · Branding · UI/UX</p>
+        <h1 class="hero__name">Gabriel Portela</h1>
+        <p class="hero__bio" data-i18n="hero.bio">
+          Designer com foco em identidade visual, interfaces digitais e experiências memoráveis.
+          Trabalho na interseção entre estratégia de marca e produto, criando soluções claras,
+          funcionais e visualmente refinadas para empresas nacionais e internacionais.
+          Acredito em processos colaborativos, pesquisa com usuários e entregas que comunicam
+          com precisão — do conceito ao pixel final.
+        </p>
+        <a href="#contacts" class="btn btn--primary hero__cta" data-i18n="hero.cta">Ver contatos</a>
+      </div>
+
+      <div class="hero__visual">
+        <div class="hero__shapes" aria-hidden="true">
+          <span class="shape shape--ring"></span>
+          <span class="shape shape--square"></span>
+          <span class="shape shape--line"></span>
+          <span class="shape shape--dot"></span>
+        </div>
+        <!-- Altere src para sua foto: images/sua-foto.jpg -->
+        <div class="hero__photo-wrap">
+          <img
+            src="images\profile-placeholder.jpeg"
+            alt="Gabriel Portela"
+            class="hero__photo"
+            width="320"
+            height="400"
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Projetos -->
+    <section class="section projects" id="projects">
+      <div class="section__inner">
+        <header class="section__header">
+          <span class="section__number">01</span>
+          <h2 class="section__title" data-i18n="projects.title">Projetos selecionados</h2>
+          <p class="section__desc" data-i18n="projects.desc">
+            Uma amostra de trabalhos em design, branding e interface. Clique para ver o case completo.
+          </p>
+        </header>
+        <div class="projects__grid" id="projects-grid">
+          <!-- Cards gerados via script.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Habilidades -->
+    <section class="section skills" id="skills">
+      <div class="section__inner">
+        <header class="section__header">
+          <span class="section__number">02</span>
+          <h2 class="section__title" data-i18n="skills.title">Habilidades</h2>
+        </header>
+        <div class="skills__layout">
+          <div class="skills__intro">
+            <p class="skills__lead" data-i18n="skills.lead">
+              Combino pensamento estratégico com execução visual de alto nível — do discovery à entrega final.
+            </p>
+          </div>
+          <div class="skills__grid">
+            <article class="skill-card">
+              <span class="skill-card__index">A</span>
+              <h3 class="skill-card__title" data-i18n="skills.card1.title">Identidade & Branding</h3>
+              <p class="skill-card__text" data-i18n="skills.card1.text">
+                Desenvolvimento de marcas coerentes: naming, logotipo, sistemas visuais, guidelines e aplicações em mídia física e digital.
+              </p>
+            </article>
+            <article class="skill-card">
+              <span class="skill-card__index">B</span>
+              <h3 class="skill-card__title" data-i18n="skills.card2.title">UI & UX Design</h3>
+              <p class="skill-card__text" data-i18n="skills.card2.text">
+                Wireframes, protótipos interativos, design systems e interfaces responsivas com foco em usabilidade e conversão.
+              </p>
+            </article>
+            <article class="skill-card">
+              <span class="skill-card__index">C</span>
+              <h3 class="skill-card__title" data-i18n="skills.card3.title">Direção de arte</h3>
+              <p class="skill-card__text" data-i18n="skills.card3.text">
+                Campanhas visuais, social media, apresentações institucionais e materiais editoriais com narrativa visual consistente.
+              </p>
+            </article>
+            <article class="skill-card">
+              <span class="skill-card__index">D</span>
+              <h3 class="skill-card__title" data-i18n="skills.card4.title">Ferramentas</h3>
+              <p class="skill-card__text" data-i18n="skills.card4.text">
+                Figma, Adobe Creative Suite, prototipagem, handoff para desenvolvimento e colaboração em fluxos ágeis com equipes multidisciplinares.
+              </p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contatos -->
+    <section class="section contacts" id="contacts">
+      <div class="section__inner">
+        <header class="section__header">
+          <span class="section__number">03</span>
+          <h2 class="section__title" data-i18n="contact.title">Contato</h2>
+          <p class="section__desc" data-i18n="contact.desc">
+            Disponível para projetos, freelas e oportunidades em empresas no Brasil e no exterior.
+          </p>
+        </header>
+        <ul class="contacts__list">
+          <li>
+            <a href="https://linkedin.com/in/gabriel-carmo-72871940a" target="_blank" rel="noopener noreferrer" class="contact-link">
+              <span class="contact-link__icon" aria-hidden="true">in</span>
+              <span>
+                <strong data-i18n="contact.linkedin">LinkedIn</strong>
+                <span class="contact-link__value">linkedin.com/in/gabriel-carmo</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="https://instagram.com/portela.pze" target="_blank" rel="noopener noreferrer" class="contact-link">
+              <span class="contact-link__icon" aria-hidden="true">ig</span>
+              <span>
+                <strong data-i18n="contact.instagram">Instagram</strong>
+                <span class="contact-link__value">@portela.pze</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="https://wa.me/5593996529369" target="_blank" rel="noopener noreferrer" class="contact-link">
+              <span class="contact-link__icon" aria-hidden="true">wa</span>
+              <span>
+                <strong data-i18n="contact.whatsapp">WhatsApp</strong>
+                <span class="contact-link__value">+55 (93) 99652-9369</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="tel:+5593996529369" class="contact-link">
+              <span class="contact-link__icon" aria-hidden="true">☎</span>
+              <span>
+                <strong data-i18n="contact.phone">Telefone fixo</strong>
+                <span class="contact-link__value">+55 (93) 99652-9369</span>
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> Gabriel Portela. Feito com esmero.</p>
+    </footer>
+  </main>
+
+  <!-- ========== PÁGINA DO PROJETO (case completo) ========== -->
+  <main id="page-project" class="page-project" hidden>
+    <article class="project-detail">
+      <header class="project-detail__header">
+        <button type="button" class="btn btn--ghost project-detail__back" data-nav-home>
+          <span aria-hidden="true">←</span>
+          <span data-i18n="project.back">Voltar</span>
+        </button>
+        <div class="project-detail__meta">
+          <span class="project-detail__category" id="project-category"></span>
+          <h1 class="project-detail__title" id="project-title"></h1>
+        </div>
+      </header>
+
+      <div class="project-detail__company">
+        <h2 class="project-detail__company-name" id="project-company"></h2>
+        <p class="project-detail__company-desc" id="project-company-desc"></p>
+      </div>
+
+      <div class="project-detail__gallery" id="project-gallery" aria-label="Galeria do projeto">
+        <!-- Imagens inseridas via script.js -->
+      </div>
+
+      <footer class="project-detail__footer">
+        <a href="#hero" class="btn btn--primary" data-nav-home data-i18n="project.home">Home</a>
+        <section class="project-detail__more">
+          <h3 class="project-detail__more-title" data-i18n="project.more">Mais projetos</h3>
+          <div class="projects__grid projects__grid--compact" id="project-more-grid">
+            <!-- 3 prévias de outros projetos -->
+          </div>
+        </section>
+      </footer>
+    </article>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
