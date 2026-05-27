@@ -3,6 +3,11 @@
  * ===========================
  * Edite os dados abaixo para personalizar textos, projetos e imagens.
  * Imagens: pasta /images (veja estrutura em cada projeto).
+ *
+ * Galeria (por imagem) — copie o bloco e altere src, title e desc:
+ *   { src: "images/projects/project-N/arquivo.jpg",
+ *     title: { pt: "Título", en: "Title" },
+ *     desc: { pt: "Descrição.", en: "Description." } },
  */
 
 /* ---------- DADOS DOS PROJETOS ---------- */
@@ -19,9 +24,30 @@ const PROJECTS = [
       en: "Supplier company focused on mining parts and industrial solutions I developed some cards to introduce the company, and to advertise their products, focused strategically paid traffic.",
     },
     gallery: [
-      "images/projects/project-1/carrosel.JPG",
-      "images/projects/project-1/carrosel-2.jpg",
-      "images/projects/project-1/carrosel-3.jpg",
+      {
+        src: "images/projects/project-1/carrosel.JPG",
+        title: { pt: "Apresentação institucional", en: "Institutional overview" },
+        desc: {
+          pt: "Card de apresentação da P2 Prime para mineradoras e indústrias, com hierarquia clara de serviços e tom técnico.",
+          en: "P2 Prime overview card for mining and industrial clients, with clear service hierarchy and a technical tone.",
+        },
+      },
+      {
+        src: "images/projects/project-1/carrosel-2.jpg",
+        title: { pt: "Divulgação de produtos", en: "Product promotion" },
+        desc: {
+          pt: "Peça focada em peças e soluções industriais, preparada para campanhas de tráfego pago.",
+          en: "Creative focused on parts and industrial solutions, designed for paid traffic campaigns.",
+        },
+      },
+      {
+        src: "images/projects/project-1/carrosel-3.jpg",
+        title: { pt: "Variação para mídia", en: "Media variation" },
+        desc: {
+          pt: "Layout alternativo mantendo a identidade visual para testes em anúncios e redes.",
+          en: "Alternate layout keeping the visual identity for ad and social A/B tests.",
+        },
+      },
     ],
   },
   {
@@ -89,9 +115,30 @@ const PROJECTS = [
       ],
     },
     gallery: [
-      "images/projects/project-2/carrosel.png",
-      "images/projects/project-2/carrosel-2.jpg",
-      "images/projects/project-2/carrosel-3.JPG",
+      {
+        src: "images/projects/project-2/carrosel.png",
+        title: { pt: "Uniformes", en: "Uniforms" },
+        desc: {
+          pt: "Propostas de uniforme com foco em esportividade e legibilidade da marca em ambiente de bar.",
+          en: "Uniform proposals emphasizing sportiness and brand legibility in a bar environment.",
+        },
+      },
+      {
+        src: "images/projects/project-2/carrosel-2.jpg",
+        title: { pt: "Conteúdo orgânico", en: "Organic content" },
+        desc: {
+          pt: "Artes para posts e stories pensadas para engajamento e reconhecimento da marca no dia a dia.",
+          en: "Post and story artwork designed for engagement and everyday brand recognition.",
+        },
+      },
+      {
+        src: "images/projects/project-2/carrosel-3.JPG",
+        title: { pt: "identidade para redes", en: "Social identity" },
+        desc: {
+          pt: "Identidade visual para o Instagram do Boteco da Suh, com paleta esportiva e tipografia de impacto.",
+          en: "Visual direction for Boteco da Suh's Instagram, with a sporty palette and bold typography.",
+        },
+      },
     ],
   },
   {
@@ -106,8 +153,22 @@ const PROJECTS = [
       en: "Curation of watches and jewelry. I created the logo, visual identity, and Instagram post cards focused on organic growth.",
     },
     gallery: [
-      "images/projects/project-3/carrossel-2.png",
-      "images/projects/project-3/carrossel.jpeg",
+      {
+        src: "images/projects/project-3/carrossel-2.png",
+        title: { pt: "Cards para Instagram", en: "Instagram cards." },
+        desc: {
+          pt: "Templates de postagem com foco em crescimento orgânico e destaque para relógios e joias.",
+          en: "Post templates focused on organic growth, highlighting watches and jewelry.",
+        },
+      },
+      {
+        src: "images/projects/project-3/carrossel.jpeg",
+        title: { pt: "Logotipo e identidade visual", en: "Logo & visual identity" },
+        desc: {
+          pt: "Marca Grand Complication com traços clássicos e aplicação em fundos escuros para curadoria de luxo.",
+          en: "Grand Complication mark with classic strokes and dark backgrounds for luxury curation.",
+        },
+      },
     ],
   },
 ];
@@ -338,6 +399,67 @@ function locText(value, lang) {
   return String(value);
 }
 
+/** Aceita string (só imagem) ou objeto { src, title, desc } na galeria. */
+function normalizeGalleryEntry(entry) {
+  if (typeof entry === "string") {
+    return { src: entry, title: null, desc: null };
+  }
+  return {
+    src: entry.src,
+    title: entry.title ?? null,
+    desc: entry.desc ?? entry.description ?? null,
+  };
+}
+
+function renderProjectGallery(project, lang) {
+  const galleryEl = document.getElementById("project-gallery");
+  if (!galleryEl || !Array.isArray(project.gallery)) return;
+
+  galleryEl.innerHTML = "";
+
+  project.gallery.forEach((entry, i) => {
+    const item = normalizeGalleryEntry(entry);
+    const figure = document.createElement("figure");
+    figure.className = "gallery-item";
+
+    const titleText = item.title ? locText(item.title, lang) : "";
+    const descText = item.desc ? locText(item.desc, lang) : "";
+
+    if (titleText || descText) {
+      const caption = document.createElement("figcaption");
+      caption.className = "gallery-item__caption";
+
+      if (titleText) {
+        const heading = document.createElement("h3");
+        heading.className = "gallery-item__title";
+        heading.textContent = titleText;
+        caption.appendChild(heading);
+      }
+
+      if (descText) {
+        const text = document.createElement("p");
+        text.className = "gallery-item__desc";
+        text.textContent = descText;
+        caption.appendChild(text);
+      }
+
+      figure.appendChild(caption);
+    }
+
+    const media = document.createElement("div");
+    media.className = "gallery-item__media";
+
+    const img = document.createElement("img");
+    img.src = item.src;
+    img.alt = titleText || `${project.title[lang]} — ${i + 1}`;
+    img.loading = i < 2 ? "eager" : "lazy";
+    media.appendChild(img);
+    figure.appendChild(media);
+
+    galleryEl.appendChild(figure);
+  });
+}
+
 function escapeHtml(str) {
   return String(str)
     .replace(/&/g, "&amp;")
@@ -416,7 +538,7 @@ function renderMenuPreview(project, lang) {
     return;
   }
 
-  section.hidden = false;
+  section.removeAttribute("hidden");
   if (titleEl) titleEl.textContent = t("project.menu.title");
   if (leadEl) leadEl.textContent = t("project.menu.lead");
   previewEl.innerHTML = buildMenuPreviewHTML(project.menu, lang);
@@ -442,15 +564,7 @@ function openProject(id, scrollTop = true) {
   document.getElementById("project-company").textContent = project.company[lang];
   document.getElementById("project-company-desc").textContent = project.companyDesc[lang];
 
-  const gallery = document.getElementById("project-gallery");
-  gallery.innerHTML = "";
-  project.gallery.forEach((src, i) => {
-    const img = document.createElement("img");
-    img.src = src;
-    img.alt = `${project.title[lang]} — ${i + 1}`;
-    img.loading = i < 2 ? "eager" : "lazy";
-    gallery.appendChild(img);
-  });
+  renderProjectGallery(project, lang);
 
   renderMenuPreview(project, lang);
 
@@ -471,6 +585,8 @@ function goHome() {
   pageProject.hidden = true;
   pageHome.hidden = false;
   document.body.classList.remove("is-project-view");
+  const menuSection = document.getElementById("project-menu-section");
+  if (menuSection) menuSection.hidden = true;
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
