@@ -35,6 +35,13 @@ const PROJECTS = [
       pt: "Empresa de Alimentação e bebidas. Desenvolvi várias artes com foco na criação do instagram da empresa e em resultados organicos. Desenvolvi também algumas variações de uniformes com foco em esportividade.",
       en: "Food and Beverage company. I created various visuals focused on building the company's Instagram and driving organic results. I also developed several uniform variations with a focus on sportiness.",
     },
+    links: [
+      {
+        href: "cdp-btc.html",
+        label: { pt: "Ver cardápio (HTML)", en: "View menu (HTML)" },
+        external: true,
+      },
+    ],
     gallery: [
       "images/projects/project-2/carrosel.png",
       "images/projects/project-2/carrosel-2.jpg",
@@ -277,6 +284,29 @@ function openProject(id, scrollTop = true) {
   document.getElementById("project-title").textContent = project.title[lang];
   document.getElementById("project-company").textContent = project.company[lang];
   document.getElementById("project-company-desc").textContent = project.companyDesc[lang];
+
+  const linksEl = document.getElementById("project-links");
+  if (linksEl) {
+    const links = Array.isArray(project.links) ? project.links : [];
+    linksEl.innerHTML = "";
+    if (links.length === 0) {
+      linksEl.hidden = true;
+    } else {
+      linksEl.hidden = false;
+      links.forEach((link) => {
+        if (!link?.href) return;
+        const a = document.createElement("a");
+        a.href = link.href;
+        a.className = "btn";
+        a.textContent = (link.label && link.label[lang]) || link.href;
+        if (link.external) {
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+        }
+        linksEl.appendChild(a);
+      });
+    }
+  }
 
   const gallery = document.getElementById("project-gallery");
   gallery.innerHTML = "";

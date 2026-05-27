@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Cardápio – Boteco da Suh</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Oswald:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════
+   RESET & VARIÁVEIS
+════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --preto:         #0a0a0a;
+  --dourado:       #c9a84c;
+  --dourado-claro: #e8c96a;
+  --dourado-esc:   #7a6128;
+  --branco:        #f5f0e8;
+  --cinza:         #7a7870;
+}
+
+/* ═══════════════════════════════════════
+   CONFIGURAÇÃO DE IMPRESSÃO
+════════════════════════════════════════ */
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media print {
+  body { background: var(--preto) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .sheet { page-break-after: always; box-shadow: none !important; }
+  .sheet:last-child { page-break-after: avoid; }
+}
+
+/* ═══════════════════════════════════════
+   FOLHA A4  (210 × 297 mm)
+════════════════════════════════════════ */
+body {
+  background: #1a1a1a;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding: 32px 0 48px;
+}
+
+.sheet {
+  width: 210mm;
+  min-height: 297mm;
+  height: 297mm;
+  background: var(--preto);
+  color: var(--branco);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.6);
+
+  /* padding interno = margens da folha impressa */
+  padding: 14mm 16mm 12mm;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Borda ornamental da folha ── */
+.sheet::before {
+  content: '';
+  position: absolute;
+  inset: 7mm;
+  border: 1px solid var(--dourado-esc);
+  pointer-events: none;
+}
+.sheet::after {
+  content: '';
+  position: absolute;
+  inset: 9mm;
+  border: 1px solid rgba(201,168,76,0.18);
+  pointer-events: none;
+}
+
+/* ── Cantos ornamentais ── */
+.corner {
+  position: absolute;
+  width: 14mm;
+  height: 14mm;
+  z-index: 2;
+}
+.corner::before, .corner::after {
+  content: '';
+  position: absolute;
+  background: var(--dourado);
+}
+.corner::before { width: 1px; height: 100%; left: 0; top: 0; }
+.corner::after  { width: 100%; height: 1px; left: 0; top: 0; }
+
+.corner.tl { top: 7mm; left: 7mm; }
+.corner.tr { top: 7mm; right: 7mm; transform: scaleX(-1); }
+.corner.bl { bottom: 7mm; left: 7mm; transform: scaleY(-1); }
+.corner.br { bottom: 7mm; right: 7mm; transform: scale(-1); }
+
+/* losango nos cantos */
+.corner .diamond {
+  position: absolute;
+  width: 5px; height: 5px;
+  background: var(--dourado);
+  transform: rotate(45deg);
+  top: -2.5px; left: -2.5px;
+}
+.corner.tr .diamond { left: auto; right: -2.5px; }
+.corner.bl .diamond { top: auto; bottom: -2.5px; }
+.corner.br .diamond { top: auto; bottom: -2.5px; right: -2.5px; left: auto; }
+
+/* ═══════════════════════════════════════
+   CABEÇALHO
+════════════════════════════════════════ */
+.sheet-header {
+  text-align: center;
+  padding-bottom: 7mm;
+  margin-bottom: 7mm;
+  border-bottom: 1px solid var(--dourado-esc);
+  flex-shrink: 0;
+}
+
+.eyebrow {
+  font-family: 'Oswald', sans-serif;
+  font-size: 8pt;
+  font-weight: 300;
+  letter-spacing: 5px;
+  color: var(--dourado);
+  text-transform: uppercase;
+  margin-bottom: 3mm;
+}
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 46pt;
+  font-weight: 900;
+  line-height: 0.88;
+  color: var(--branco);
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+}
+.logo span {
+  display: block;
+  font-size: 22pt;
+  font-weight: 700;
+  color: var(--dourado);
+  letter-spacing: 10px;
+  margin-top: 2mm;
+}
+
+.header-rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 4mm 0 3mm;
+}
+.header-rule::before, .header-rule::after {
+  content: '';
+  width: 28mm;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--dourado-esc));
+}
+.header-rule::after {
+  background: linear-gradient(to left, transparent, var(--dourado-esc));
+}
+.rhombus {
+  width: 6px; height: 6px;
+  background: var(--dourado);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+.address {
+  font-family: 'Oswald', sans-serif;
+  font-size: 7pt;
+  font-weight: 300;
+  letter-spacing: 2px;
+  color: var(--cinza);
+  text-transform: uppercase;
+}
+
+/* ── Cabeçalho compacto (pág. 2) ── */
+.sheet-header.compact {
+  padding-bottom: 5mm;
+  margin-bottom: 5mm;
+}
+.sheet-header.compact .logo { font-size: 28pt; }
+.sheet-header.compact .logo span { font-size: 13pt; letter-spacing: 7px; }
+.sheet-header.compact .eyebrow { margin-bottom: 2mm; }
+.sheet-header.compact .header-rule { margin: 3mm 0 2mm; }
+
+/* ═══════════════════════════════════════
+   CONTEÚDO – CRESCE PARA PREENCHER
+════════════════════════════════════════ */
+.sheet-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ═══════════════════════════════════════
+   SEÇÃO
+════════════════════════════════════════ */
+section {
+  margin-bottom: 5.5mm;
+}
+section:last-of-type {
+  margin-bottom: 0;
+}
+
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3mm;
+}
+.section-label h2 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 7.5pt;
+  font-weight: 500;
+  letter-spacing: 4px;
+  color: var(--dourado);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--dourado-esc), transparent);
+}
+
+/* ═══════════════════════════════════════
+   GRID BEBIDAS
+════════════════════════════════════════ */
+.drinks-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10mm;
+}
+.drinks-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+.drink-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 2mm 0;
+  border-bottom: 1px solid rgba(201,168,76,0.10);
+}
+.drink-row:last-child { border-bottom: none; }
+
+.drink-name {
+  font-size: 10pt;
+  font-weight: 300;
+  color: var(--branco);
+}
+.drink-price {
+  font-family: 'Oswald', sans-serif;
+  font-size: 9.5pt;
+  font-weight: 400;
+  color: var(--dourado);
+  margin-left: 6px;
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════
+   GRID COMIDAS
+════════════════════════════════════════ */
+.food-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 10mm;
+}
+
+.food-item {
+  padding: 2.5mm 0;
+  border-bottom: 1px solid rgba(201,168,76,0.10);
+}
+.food-item:nth-last-child(-n+2) { border-bottom: none; }
+
+.food-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 4px;
+}
+.food-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 10.5pt;
+  font-weight: 700;
+  color: var(--branco);
+}
+.food-price {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10pt;
+  font-weight: 500;
+  color: var(--dourado);
+  white-space: nowrap;
+}
+.food-desc {
+  font-size: 8pt;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--cinza);
+  line-height: 1.4;
+  margin-top: 0.5mm;
+}
+.adicional-tag {
+  display: inline-flex;
+  margin-top: 1.5mm;
+  background: rgba(201,168,76,0.07);
+  border: 1px solid rgba(201,168,76,0.28);
+  padding: 1px 6px;
+}
+.adicional-tag span {
+  font-family: 'Oswald', sans-serif;
+  font-size: 7pt;
+  letter-spacing: 1px;
+  color: var(--dourado);
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════
+   ESPAÇADOR FLEXÍVEL
+════════════════════════════════════════ */
+.spacer { flex: 1; }
+
+/* ═══════════════════════════════════════
+   RODAPÉ DA FOLHA
+════════════════════════════════════════ */
+.sheet-footer {
+  flex-shrink: 0;
+  text-align: center;
+  padding-top: 5mm;
+  border-top: 1px solid var(--dourado-esc);
+  margin-top: 5mm;
+}
+
+.footer-rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 3mm;
+}
+.footer-rule::before, .footer-rule::after {
+  content: '';
+  width: 20mm;
+  height: 1px;
+  background: var(--dourado-esc);
+}
+
+.aviso-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 6.5pt;
+  font-weight: 500;
+  letter-spacing: 3px;
+  color: var(--dourado);
+  text-transform: uppercase;
+  margin-bottom: 2mm;
+}
+.aviso-text {
+  font-size: 7.5pt;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--cinza);
+  line-height: 1.7;
+}
+
+/* separador entre seções na pág. 1 */
+.group-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 5mm 0;
+  opacity: 0.5;
+}
+.group-divider::before, .group-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--dourado-esc);
+}
+.group-divider .rhombus { width: 5px; height: 5px; }
+
+</style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════╗
+     ║        FOLHA 1 – BEBIDAS        ║
+     ╚══════════════════════════════════╝ -->
+<div class="sheet">
+
+  <!-- cantos ornamentais -->
+  <div class="corner tl"><div class="diamond"></div></div>
+  <div class="corner tr"><div class="diamond"></div></div>
+  <div class="corner bl"><div class="diamond"></div></div>
+  <div class="corner br"><div class="diamond"></div></div>
+
+  <!-- CABEÇALHO PRINCIPAL -->
+  <header class="sheet-header">
+    <div class="eyebrow">Cardápio</div>
+    <div class="logo">Boteco<span>da &nbsp; Suh</span></div>
+    <div class="header-rule"><div class="rhombus"></div></div>
+    <div class="address">Av. Mal. Rondon, 3119 &nbsp;·&nbsp; Caranazal, Santarém – PA</div>
+  </header>
+
+  <!-- CORPO DA FOLHA 1 -->
+  <div class="sheet-body">
+
+    <!-- CERVEJAS: litrão + 600 ml lado a lado -->
+    <section>
+      <div class="section-label"><h2>Cervejas em Garrafa</h2></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0 10mm;">
+
+        <!-- coluna esquerda: litrão -->
+        <div>
+          <div style="font-family:'Oswald',sans-serif;font-size:6.5pt;letter-spacing:3px;color:var(--cinza);text-transform:uppercase;margin-bottom:2mm;">Litrão</div>
+          <div class="drink-row"><span class="drink-name">Skol Pilsen</span><span class="drink-price">R$ 13</span></div>
+          <div class="drink-row"><span class="drink-name">Brahma Chopp</span><span class="drink-price">R$ 11</span></div>
+          <div class="drink-row"><span class="drink-name">Antártica Orig.</span><span class="drink-price">R$ 15</span></div>
+        </div>
+
+        <!-- coluna direita: 600 ml -->
+        <div>
+          <div style="font-family:'Oswald',sans-serif;font-size:6.5pt;letter-spacing:3px;color:var(--cinza);text-transform:uppercase;margin-bottom:2mm;">600 ml</div>
+          <div class="drink-row"><span class="drink-name">Skol Pilsen</span><span class="drink-price">R$ 11</span></div>
+          <div class="drink-row"><span class="drink-name">Brahma Chopp</span><span class="drink-price">R$ 10</span></div>
+          <div class="drink-row"><span class="drink-name">Antártica Orig.</span><span class="drink-price">R$ 12</span></div>
+          <div class="drink-row"><span class="drink-name">Heineken</span><span class="drink-price">R$ 18</span></div>
+          <div class="drink-row"><span class="drink-name">Sparten</span><span class="drink-price">R$ 15</span></div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="group-divider"><div class="rhombus"></div></div>
+
+    <!-- LONG NECK -->
+    <section>
+      <div class="section-label"><h2>Long Neck</h2></div>
+      <div class="drinks-grid cols-3">
+        <div class="drink-row"><span class="drink-name">Heineken</span><span class="drink-price">R$ 12</span></div>
+        <div class="drink-row"><span class="drink-name">Tijuca</span><span class="drink-price">R$ 12</span></div>
+        <div class="drink-row"><span class="drink-name">Stella Gold</span><span class="drink-price">R$ 12</span></div>
+        <div class="drink-row"><span class="drink-name">Budweiser</span><span class="drink-price">R$ 10</span></div>
+        <div class="drink-row"><span class="drink-name">Stella Artois</span><span class="drink-price">R$ 12</span></div>
+        <div class="drink-row"><span class="drink-name">Corona</span><span class="drink-price">R$ 12</span></div>
+      </div>
+    </section>
+
+    <div class="group-divider"><div class="rhombus"></div></div>
+
+    <!-- LATA -->
+    <section>
+      <div class="section-label"><h2>Lata</h2></div>
+      <div class="drinks-grid cols-3">
+        <div class="drink-row"><span class="drink-name">Brahma 269 ml</span><span class="drink-price">R$ 5</span></div>
+        <div class="drink-row"><span class="drink-name">Skol 269 ml</span><span class="drink-price">R$ 5</span></div>
+        <div class="drink-row"><span class="drink-name">Império 269 ml</span><span class="drink-price">R$ 4</span></div>
+        <div class="drink-row"><span class="drink-name">Brahma 350 ml</span><span class="drink-price">R$ 6</span></div>
+        <div class="drink-row"><span class="drink-name">Skol 350 ml</span><span class="drink-price">R$ 6</span></div>
+        <div class="drink-row"><span class="drink-name">Brahma Duplo Malte</span><span class="drink-price">R$ 7</span></div>
+      </div>
+    </section>
+
+    <div class="group-divider"><div class="rhombus"></div></div>
+
+    <!-- REFRIGERANTES -->
+    <section>
+      <div class="section-label"><h2>Refrigerantes</h2></div>
+      <div class="drinks-grid cols-3">
+        <div class="drink-row"><span class="drink-name">Refrigerante lata</span><span class="drink-price">R$ 5</span></div>
+        <div class="drink-row"><span class="drink-name">Coca-Cola 1 L</span><span class="drink-price">R$ 8</span></div>
+        <div class="drink-row"><span class="drink-name">Coca-Cola 2 L</span><span class="drink-price">R$ 14</span></div>
+        <div class="drink-row"><span class="drink-name">Sprite 510 ml</span><span class="drink-price">R$ 7</span></div>
+        <div class="drink-row"><span class="drink-name">Guaraná 1 L</span><span class="drink-price">R$ 6</span></div>
+        <div class="drink-row"><span class="drink-name">Guaraná 2 L</span><span class="drink-price">R$ 12</span></div>
+      </div>
+    </section>
+
+    <!-- espaçador empurra rodapé para baixo -->
+    <div class="spacer"></div>
+
+  </div><!-- /sheet-body -->
+
+  <!-- RODAPÉ FOLHA 1 -->
+  <footer class="sheet-footer">
+    <div class="footer-rule"><div class="rhombus"></div></div>
+    <div class="aviso-title">Aviso ao Cliente</div>
+    <p class="aviso-text">
+      Conforme a Lei nº 13.455/2017, é permitida a diferença de preços por forma de pagamento.<br>
+      Cartão de crédito: acréscimo de 5% &nbsp;·&nbsp; Cartão de débito: acréscimo de 2% &nbsp;·&nbsp; Valores informados antes da compra.
+    </p>
+  </footer>
+
+</div><!-- /sheet 1 -->
+
+
+<!-- ╔══════════════════════════════════╗
+     ║    FOLHA 2 – TIRA GOSTO        ║
+     ╚══════════════════════════════════╝ -->
+<div class="sheet">
+
+  <div class="corner tl"><div class="diamond"></div></div>
+  <div class="corner tr"><div class="diamond"></div></div>
+  <div class="corner bl"><div class="diamond"></div></div>
+  <div class="corner br"><div class="diamond"></div></div>
+
+  <!-- CABEÇALHO COMPACTO -->
+  <header class="sheet-header compact">
+    <div class="eyebrow">Cardápio</div>
+    <div class="logo">Boteco<span>da &nbsp; Suh</span></div>
+    <div class="header-rule"><div class="rhombus"></div></div>
+    <div class="address">Av. Mal. Rondon, 3119 &nbsp;·&nbsp; Caranazal, Santarém – PA</div>
+  </header>
+
+  <!-- CORPO FOLHA 2 -->
+  <div class="sheet-body">
+
+    <!-- TIRA GOSTO -->
+    <section>
+      <div class="section-label"><h2>Tira Gosto</h2></div>
+      <div class="food-grid">
+
+        <div class="food-item">
+          <div class="food-header">
+            <span class="food-name">Calabresa Acebolada</span>
+            <span class="food-price">R$ 25</span>
+          </div>
+          <p class="food-desc">300 g de calabresa com cebola em rodelas</p>
+        </div>
+
+        <div class="food-item">
+          <div class="food-header">
+            <span class="food-name">Carne Acebolada</span>
+            <span class="food-price">R$ 35</span>
+          </div>
+          <p class="food-desc">300 g de alcatra em tiras com cebola em rodelas</p>
+        </div>
+
+        <div class="food-item">
+          <div class="food-header">
+            <span class="food-name">Batata Frita</span>
+            <span class="food-price">R$ 25</span>
+          </div>
+          <p class="food-desc">300 g de batata</p>
+          <div class="adicional-tag"><span>+ Bacon R$ 5,00</span></div>
+        </div>
+
+        <div class="food-item">
+          <div class="food-header">
+            <span class="food-name">Bolinho de Piracuí</span>
+            <span class="food-price">R$ 35</span>
+          </div>
+          <p class="food-desc">12 unidades</p>
+        </div>
+
+        <div class="food-item">
+          <div class="food-header">
+            <span class="food-name">Frango a Passarinho</span>
+            <span class="food-price">R$ 35</span>
+          </div>
+          <p class="food-desc">500 g de frango empanado em farinha Panco</p>
+        </div>
+
+        <div class="food-item">
+          <div class="food-header">
+            <span class="food-name">Calabresa com Fritas</span>
+            <span class="food-price">R$ 40</span>
+          </div>
+          <p class="food-desc">300 g de calabresa + 300 g de batata frita</p>
+        </div>
+
+        <div class="food-item">
+          <div class="food-header">
+            <span class="food-name">Carne com Fritas</span>
+            <span class="food-price">R$ 50</span>
+          </div>
+          <p class="food-desc">300 g de carne em tiras + 300 g de batata frita</p>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="group-divider"><div class="rhombus"></div></div>
+
+    <!-- SANDUÍCHES -->
+    <section>
+      <div class="section-label"><h2>Sanduíches</h2></div>
+      <div class="food-grid">
+
+        <div class="food-item">
+          <div class="food-header">
+            <span class="food-name">X-Salada</span>
+            <span class="food-price">R$ 15</span>
+          </div>
+          <p class="food-desc">100 g de carne, alface, tomate, ovo, queijo e presunto</p>
+        </div>
+
+        <div class="food-item">
+          <div class="food-header">
+            <span class="food-name">X-Bacon</span>
+            <span class="food-price">R$ 18</span>
+          </div>
+          <p class="food-desc">100 g de carne, bacon, alface, tomate, ovo, queijo e presunto</p>
+        </div>
+
+        <div class="food-item">
+          <div class="food-header">
+            <span class="food-name">Misto Quente</span>
+            <span class="food-price">R$ 10</span>
+          </div>
+          <p class="food-desc">Pão de forma, queijo e presunto</p>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="spacer"></div>
+
+  </div><!-- /sheet-body -->
+
+  <!-- RODAPÉ FOLHA 2 -->
+  <footer class="sheet-footer">
+    <div class="footer-rule"><div class="rhombus"></div></div>
+    <div class="aviso-title">Aviso ao Cliente</div>
+    <p class="aviso-text">
+      Conforme a Lei nº 13.455/2017, é permitida a diferença de preços por forma de pagamento.<br>
+      Cartão de crédito: acréscimo de 5% &nbsp;·&nbsp; Cartão de débito: acréscimo de 2% &nbsp;·&nbsp; Valores informados antes da compra.
+    </p>
+  </footer>
+
+</div><!-- /sheet 2 -->
+
+</body>
+</html>
