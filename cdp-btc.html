@@ -30,8 +30,32 @@
 
 @media print {
   body { background: var(--preto) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .menu-standalone-nav { display: none !important; }
   .sheet { page-break-after: always; box-shadow: none !important; }
   .sheet:last-child { page-break-after: avoid; }
+}
+
+.menu-standalone-nav {
+  width: min(210mm, 100%);
+  margin: 0 auto;
+  padding: 1rem 1.25rem 0;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.menu-standalone-nav a {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dourado);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.menu-standalone-nav a:hover {
+  color: var(--dourado-claro);
 }
 
 /* ═══════════════════════════════════════
@@ -393,6 +417,10 @@ section:last-of-type {
 </head>
 <body>
 
+<nav class="menu-standalone-nav" aria-label="Navegação">
+  <a href="index.html?project=project-2" id="menu-back-link">← Voltar ao portfólio</a>
+</nav>
+
 <!-- ╔══════════════════════════════════╗
      ║        FOLHA 1 – BEBIDAS        ║
      ╚══════════════════════════════════╝ -->
@@ -640,5 +668,17 @@ section:last-of-type {
 
 </div><!-- /sheet 2 -->
 
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  var lang = params.get("lang") === "en" ? "en" : "pt";
+  document.documentElement.lang = lang === "en" ? "en" : "pt-BR";
+  var back = document.getElementById("menu-back-link");
+  if (back) {
+    back.textContent = lang === "en" ? "← Back to portfolio" : "← Voltar ao portfólio";
+    back.href = "index.html?project=project-2";
+  }
+})();
+</script>
 </body>
 </html>

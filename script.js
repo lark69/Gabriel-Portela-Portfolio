@@ -35,13 +35,59 @@ const PROJECTS = [
       pt: "Empresa de Alimentação e bebidas. Desenvolvi várias artes com foco na criação do instagram da empresa e em resultados organicos. Desenvolvi também algumas variações de uniformes com foco em esportividade.",
       en: "Food and Beverage company. I created various visuals focused on building the company's Instagram and driving organic results. I also developed several uniform variations with a focus on sportiness.",
     },
-    links: [
-      {
-        href: "cdp-btc.html",
-        label: { pt: "Ver cardápio (HTML)", en: "View menu (HTML)" },
-        external: true,
+    menu: {
+      fullHref: "cdp-btc.html",
+      address: {
+        pt: "Av. Mal. Rondon, 3119 · Caranazal, Santarém – PA",
+        en: "3119 Mal. Rondon Ave · Caranazal, Santarém – PA, Brazil",
       },
-    ],
+      sections: [
+        {
+          title: { pt: "Cervejas em Garrafa", en: "Bottled Beer" },
+          items: [
+            { name: "Skol Pilsen", price: "R$ 13", sub: { pt: "Litrão", en: "Liter bottle" } },
+            { name: "Heineken", price: "R$ 18", sub: { pt: "600 ml", en: "600 ml" } },
+            { name: "Brahma Chopp", price: "R$ 11", sub: { pt: "Litrão", en: "Liter bottle" } },
+          ],
+        },
+        {
+          title: { pt: "Long Neck", en: "Long Neck" },
+          items: [
+            { name: "Stella Artois", price: "R$ 12" },
+            { name: "Corona", price: "R$ 12" },
+            { name: "Budweiser", price: "R$ 10" },
+          ],
+        },
+        {
+          title: { pt: "Tira Gosto", en: "Bar Snacks" },
+          items: [
+            {
+              name: { pt: "Calabresa Acebolada", en: "Sautéed Calabresa Sausage" },
+              price: "R$ 25",
+              desc: { pt: "300 g com cebola em rodelas", en: "300 g with sliced onions" },
+            },
+            {
+              name: { pt: "Carne com Fritas", en: "Beef Strips & Fries" },
+              price: "R$ 50",
+              desc: { pt: "300 g de carne + 300 g de batata", en: "300 g beef + 300 g fries" },
+            },
+          ],
+        },
+        {
+          title: { pt: "Sanduíches", en: "Sandwiches" },
+          items: [
+            {
+              name: "X-Bacon",
+              price: "R$ 18",
+              desc: {
+                pt: "Carne, bacon, alface, tomate, ovo, queijo e presunto",
+                en: "Beef, bacon, lettuce, tomato, egg, cheese & ham",
+              },
+            },
+          ],
+        },
+      ],
+    },
     gallery: [
       "images/projects/project-2/carrosel.png",
       "images/projects/project-2/carrosel-2.jpg",
@@ -108,6 +154,12 @@ const I18N = {
     "project.home": "Home",
     "project.more": "Mais projetos",
     "projects.viewShort": "Ver",
+    "project.menu.title": "Cardápio digital",
+    "project.menu.lead":
+      "Material em HTML para impressão e consulta online — identidade preto e dourado alinhada à marca do estabelecimento.",
+    "project.menu.label": "Cardápio",
+    "project.menu.viewFull": "Ver completo",
+    "project.menu.more": "+ itens no cardápio completo",
   },
   en: {
     "lang.choose": "Choose your language",
@@ -149,6 +201,12 @@ const I18N = {
     "project.home": "Home",
     "project.more": "More projects",
     "projects.viewShort": "View",
+    "project.menu.title": "Digital menu",
+    "project.menu.lead":
+      "Editorial HTML piece for print and in-venue browsing — black-and-gold identity aligned with the venue's brand.",
+    "project.menu.label": "Menu",
+    "project.menu.viewFull": "View full menu",
+    "project.menu.more": "+ more items in the full menu",
   },
 };
 
@@ -272,6 +330,105 @@ function renderProjectCards(container, projects, compact) {
   });
 }
 
+function locText(value, lang) {
+  if (value == null) return "";
+  if (typeof value === "object" && (value.pt !== undefined || value.en !== undefined)) {
+    return value[lang] ?? value.pt ?? value.en ?? "";
+  }
+  return String(value);
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function buildMenuPreviewHTML(menu, lang) {
+  const sectionsHtml = menu.sections
+    .map((section) => {
+      const itemsHtml = section.items
+        .map((item) => {
+          const name = locText(item.name, lang);
+          const sub = item.sub ? `<span class="menu-preview__item-sub">${escapeHtml(locText(item.sub, lang))}</span>` : "";
+          const desc = item.desc
+            ? `<p class="menu-preview__item-desc">${escapeHtml(locText(item.desc, lang))}</p>`
+            : "";
+          return `
+            <div class="menu-preview__item">
+              <div class="menu-preview__item-row">
+                <span class="menu-preview__item-name">${escapeHtml(name)}${sub}</span>
+                <span class="menu-preview__item-price">${escapeHtml(item.price)}</span>
+              </div>
+              ${desc}
+            </div>
+          `;
+        })
+        .join("");
+
+      return `
+        <div class="menu-preview__section">
+          <div class="menu-preview__section-label">
+            <h3>${escapeHtml(locText(section.title, lang))}</h3>
+          </div>
+          <div class="menu-preview__items">${itemsHtml}</div>
+        </div>
+      `;
+    })
+    .join("");
+
+  return `
+    <div class="menu-preview__frame">
+      <span class="menu-preview__corner menu-preview__corner--tl" aria-hidden="true"></span>
+      <span class="menu-preview__corner menu-preview__corner--tr" aria-hidden="true"></span>
+      <span class="menu-preview__corner menu-preview__corner--bl" aria-hidden="true"></span>
+      <span class="menu-preview__corner menu-preview__corner--br" aria-hidden="true"></span>
+      <div class="menu-preview__sheet">
+        <header class="menu-preview__header">
+          <span class="menu-preview__eyebrow">${escapeHtml(t("project.menu.label"))}</span>
+          <p class="menu-preview__logo">Boteco<span>da Suh</span></p>
+          <div class="menu-preview__rule" aria-hidden="true"><span class="menu-preview__rhombus"></span></div>
+          <p class="menu-preview__address">${escapeHtml(menu.address[lang])}</p>
+        </header>
+        <div class="menu-preview__body">
+          ${sectionsHtml}
+          <p class="menu-preview__more">${escapeHtml(t("project.menu.more"))}</p>
+        </div>
+        <div class="menu-preview__fade" aria-hidden="true"></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderMenuPreview(project, lang) {
+  const section = document.getElementById("project-menu-section");
+  const previewEl = document.getElementById("project-menu-preview");
+  const titleEl = document.getElementById("project-menu-title");
+  const leadEl = document.getElementById("project-menu-lead");
+  const fullLink = document.getElementById("project-menu-full-link");
+
+  if (!section || !previewEl) return;
+
+  if (!project.menu) {
+    section.hidden = true;
+    return;
+  }
+
+  section.hidden = false;
+  if (titleEl) titleEl.textContent = t("project.menu.title");
+  if (leadEl) leadEl.textContent = t("project.menu.lead");
+  previewEl.innerHTML = buildMenuPreviewHTML(project.menu, lang);
+
+  if (fullLink) {
+    fullLink.href = project.menu.fullHref;
+    fullLink.textContent = t("project.menu.viewFull");
+    const backLang = lang === "en" ? "en" : "pt";
+    fullLink.href = `${project.menu.fullHref}?lang=${backLang}`;
+  }
+}
+
 /* ---------- PROJETOS — página completa ---------- */
 function openProject(id, scrollTop = true) {
   const project = getProjectById(id);
@@ -285,29 +442,6 @@ function openProject(id, scrollTop = true) {
   document.getElementById("project-company").textContent = project.company[lang];
   document.getElementById("project-company-desc").textContent = project.companyDesc[lang];
 
-  const linksEl = document.getElementById("project-links");
-  if (linksEl) {
-    const links = Array.isArray(project.links) ? project.links : [];
-    linksEl.innerHTML = "";
-    if (links.length === 0) {
-      linksEl.hidden = true;
-    } else {
-      linksEl.hidden = false;
-      links.forEach((link) => {
-        if (!link?.href) return;
-        const a = document.createElement("a");
-        a.href = link.href;
-        a.className = "btn";
-        a.textContent = (link.label && link.label[lang]) || link.href;
-        if (link.external) {
-          a.target = "_blank";
-          a.rel = "noopener noreferrer";
-        }
-        linksEl.appendChild(a);
-      });
-    }
-  }
-
   const gallery = document.getElementById("project-gallery");
   gallery.innerHTML = "";
   project.gallery.forEach((src, i) => {
@@ -317,6 +451,8 @@ function openProject(id, scrollTop = true) {
     img.loading = i < 2 ? "eager" : "lazy";
     gallery.appendChild(img);
   });
+
+  renderMenuPreview(project, lang);
 
   const others = PROJECTS.filter((p) => p.id !== id).slice(0, 3);
   renderProjectCards(projectMoreGrid, others, true);
@@ -374,6 +510,12 @@ function init() {
   initLanguage();
   initNavigation();
   renderProjectCards(projectsGrid, PROJECTS, false);
+
+  const projectId = new URLSearchParams(window.location.search).get("project");
+  if (projectId && getProjectById(projectId)) {
+    if (langOverlay) langOverlay.classList.add("is-hidden");
+    openProject(projectId, false);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", init);
